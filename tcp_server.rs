@@ -22,24 +22,24 @@ fn main() {
         }
     };
 
-    // for stream in listener.incoming() {
-    //     match stream {
-    //         Ok(stream) => {
-    //             match stream.peer_addr() {
-    //                 Ok(client_addr) => {
-    //                     println!("Connected to {:?}", client_addr);
-    //                     // how can we send string to client?
-    //                 },
-    //                 Err(e) => {
-    //                     eprintln!("Failed to obtain client address. {}", e);
-    //                 }
-    //             };
-    //         },
-    //         Err(e) => {
-    //             eprintln!("Failed to connect to client. {}", e);
-    //             std::process::exit(1);
-    //         }
-    //     }
-    // }
+    for stream in listener.incoming() {
+        match stream {
+            Ok(stream) => {
+                match stream.peer_addr() {
+                    Ok(client_addr) => {
+                        println!("Connected to {:?}", client_addr);
+                        // how can we send string to client?
+                    },
+                    Err(e) => {
+                        eprintln!("Failed to obtain client address. {}", e);
+                    }
+                };
+            },
+            Err(e) => {
+                eprintln!("Failed to connect to client. {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
 }
 
