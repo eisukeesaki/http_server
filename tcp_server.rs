@@ -11,17 +11,17 @@ fn main() {
     let port = &args[2];
     let socket = format!("{}:{}", ipaddr, port);
 
-    // let listener = match std::net::TcpListener::bind(socket) {
-    //     Ok(l) => {
-    //         println!("Listener bound to socket.");
-    //         l
-    //     },
-    //     Err(e) => {
-    //         eprintln!("Failed to bind listener to socket. {}", e);
-    //         std::process::exit(1);
-    //     }
-    // };
-    //
+    let listener = match std::net::TcpListener::bind(socket) {
+        Ok(l) => {
+            println!("Listener bound to socket.");
+            l
+        },
+        Err(e) => {
+            eprintln!("Failed to bind listener to socket. {}", e);
+            std::process::exit(1);
+        }
+    };
+
     // for stream in listener.incoming() {
     //     match stream {
     //         Ok(stream) => {
