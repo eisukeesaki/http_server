@@ -1,3 +1,5 @@
+use std::io::Write;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -24,11 +26,17 @@ fn main() {
 
     for stream in listener.incoming() {
         match stream {
-            Ok(stream) => {
+            Ok(mut stream) => {
                 match stream.peer_addr() {
                     Ok(client_addr) => {
                         println!("Connected to {:?}", client_addr);
-                        // how can we send string to client?
+                        let response = "HTTP/1.1 200 OK\r\n\r\n";
+                        match stream.write_all(response.as_bytes()) {
+                            Ok(()) => {
+                                println!("Written to client: {}", response);
+                            },
+                            Err(e) => eprintln!("Failed to respond to client. {}", e),
+                        }
                     },
                     Err(e) => {
                         eprintln!("Failed to obtain client address. {}", e);
