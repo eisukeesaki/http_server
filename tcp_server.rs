@@ -1,3 +1,5 @@
+use std::process;
+use std::net::TcpListener;
 use std::io::Write;
 
 fn main() {
@@ -6,21 +8,21 @@ fn main() {
     if args.len() != 3 {
         println!("Terminating due to insufficent number of arguments.");
         println!("usage: ./app <ipaddr> <port>");
-        std::process::exit(1);
+        process::exit(1);
     }
 
     let ipaddr = &args[1];
     let port = &args[2];
     let socket = format!("{}:{}", ipaddr, port);
 
-    let listener = match std::net::TcpListener::bind(socket) {
+    let listener = match TcpListener::bind(socket) {
         Ok(l) => {
             println!("Listener bound to socket.");
             l
         },
         Err(e) => {
             eprintln!("Failed to bind listener to socket. {}", e);
-            std::process::exit(1);
+            process::exit(1);
         }
     };
 
@@ -45,7 +47,7 @@ fn main() {
             },
             Err(e) => {
                 eprintln!("Failed to connect to client. {}", e);
-                std::process::exit(1);
+                process::exit(1);
             }
         }
     }
