@@ -1,6 +1,9 @@
 use std::process;
 use std::net::TcpListener;
 use std::io::Write;
+use std::io::Read;
+
+const DEBUG: &str = "[DEBUG]";
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -17,7 +20,7 @@ fn main() {
 
     let listener = match TcpListener::bind(socket) {
         Ok(l) => {
-            println!("Listener bound to socket.");
+            println!("{} Listener bound to socket.", DEBUG);
             l
         },
         Err(e) => {
@@ -29,21 +32,40 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
-                match stream.peer_addr() {
-                    Ok(client_addr) => {
-                        println!("Connected to {:?}", client_addr);
-                        let response = "HTTP/1.1 200 OK\r\n\r\n";
-                        match stream.write_all(response.as_bytes()) {
-                            Ok(()) => {
-                                println!("Written to client: {}", response);
-                            },
-                            Err(e) => eprintln!("Failed to respond to client. {}", e),
+                #[cfg(feature="debug")]
+                {
+                    match stream.peer_addr() {
+                        Ok(client_addr) => println!("{} Connected to {:?}",
+                            DEBUG, client_addr),
+                        Err(e) => eprintln!("Failed to obtain client address. {}",
+                            e),
+                    };
+                }
+
+                let response = "Hello.";
+                match stream.write_all(response.as_bytes()) {
+                    Ok(()) => {
+                        #[cfg(feature="debug")]
+                        {
+                            println!("{} Sent welcome message to user.\n", DEBUG);
                         }
                     },
-                    Err(e) => {
-                        eprintln!("Failed to obtain client address. {}", e);
+                    Err(e) => eprintln!("Failed to respond to client. {}", e),
+                }
+
+                loop {
+                    let mut buff = [0; 1024];
+                    match stream.read(&mut buff) {
+                        Ok(bytes_read) => {
+                            let message =
+                                String::from_utf8_lossy(&buff[0..bytes_read]);
+                            print!("[Client]\n{}\n", message);
+                        },
+                        Err(e) => { // not tested
+                            eprintln!("Couldn't read from stream. {}", e);
+                        }
                     }
-                };
+                }
             },
             Err(e) => {
                 eprintln!("Failed to connect to client. {}", e);

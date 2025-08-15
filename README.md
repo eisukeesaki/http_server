@@ -6,6 +6,4 @@
 
 ## Features
 
-- connect to client
-- notify client user about successful connection
-
+- repeatedly print messages sent by user
