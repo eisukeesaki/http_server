@@ -2,11 +2,12 @@ use std::process;
 use std::net::TcpListener;
 use std::io::Write;
 use std::io::Read;
+use std::env;
 
 const DEBUG: &str = "[DEBUG]";
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
+    let args: Vec<String> = env::args().collect();
 
     if args.len() != 3 {
         println!("Terminating due to insufficent number of arguments.");
