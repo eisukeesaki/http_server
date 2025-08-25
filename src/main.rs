@@ -6,6 +6,10 @@ use std::env;
 
 const DEBUG: &str = "[DEBUG]";
 
+// fn handle_client(stream: TcpStream) {
+//
+// }
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
